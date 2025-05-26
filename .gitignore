@@ -1,0 +1,16 @@
+# .gitignore
+
+# Ignore cache and system files
+.cache/
+*.log
+node_modules/
+*.pyc
+__pycache__/
+*.tmp
+
+# Ignore nested git repos
+**/.git
+
+# Ignore Cypress output
+cypress/videos/
+cypress/screenshots/
