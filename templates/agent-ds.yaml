@@ -54,14 +54,16 @@ spec:
           image: {{ include "agent.image" . }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           args:
-            {{ include "extra.cmdArgs" (dict "cmdlineParams" .Values.agent.cmdlineParams) | nindent 12 }}
+            {{- range $arg := (include "extra.cmdArgs" (dict "cmdlineParams" .Values.agent.cmdlineParams) | fromYamlArray) }}
+            - {{ $arg | quote }}
+            {{- end }}
           env:
             {{- with .Values.agent.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
             {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}
             - name: REPORTER_GRPC_HOST_PORT
-              value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}
+              value: "{{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}"
             {{- end }}
           {{- with .Values.agent.envFrom }}
           envFrom:
