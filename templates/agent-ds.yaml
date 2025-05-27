@@ -17,14 +17,14 @@ spec:
       app.kubernetes.io/component: agent
   {{- with .Values.agent.daemonset.updateStrategy }}
   updateStrategy:
-    {{- toYaml . | nindent 6 }}
+    {{- toYaml . | nindent 4 }}
   {{- end }}
   template:
     metadata:
-      {{- with .Values.agent.podAnnotations }}
       annotations:
+        {{- with .Values.agent.podAnnotations }}
         {{- toYaml . | nindent 8 }}
-      {{- end }}
+        {{- end }}
       labels:
         {{- include "jaeger.selectorLabels" . | nindent 8 }}
         app.kubernetes.io/component: agent
@@ -32,8 +32,10 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.agent.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.agent.podSecurityContext | nindent 8 }}
+      {{- end }}
       {{- if .Values.agent.useHostNetwork }}
       hostNetwork: true
       {{- end }}
