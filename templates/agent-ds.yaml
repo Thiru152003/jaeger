@@ -1,4 +1,4 @@
-{{- if .Values.agent.enabled -}}
+{{- if .Values.agent.enabled }}
 apiVersion: apps/v1
 kind: DaemonSet
 metadata:
@@ -54,7 +54,7 @@ spec:
           image: {{ include "agent.image" . }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           args:
-            {{ include "extra.cmdArgs" ( dict "cmdlineParams" .Values.agent.cmdlineParams ) | nindent 12 }}
+            {{ include "extra.cmdArgs" (dict "cmdlineParams" .Values.agent.cmdlineParams) | nindent 12 }}
           env:
             {{- with .Values.agent.extraEnv }}
             {{- toYaml . | nindent 12 }}
@@ -65,7 +65,7 @@ spec:
             {{- end }}
           {{- with .Values.agent.envFrom }}
           envFrom:
-            {{- toYaml . | nindent 10 }}
+            {{- toYaml . | nindent 12 }}
           {{- end }}
           ports:
             - name: zipkin-compact
