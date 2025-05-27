@@ -17,7 +17,7 @@ spec:
       app.kubernetes.io/component: agent
   {{- with .Values.agent.daemonset.updateStrategy }}
   updateStrategy:
-    {{- toYaml . | nindent 4 }}
+    {{- toYaml . | nindent 6 }}
   {{- end }}
   template:
     metadata:
@@ -54,16 +54,14 @@ spec:
           image: {{ include "agent.image" . }}
           imagePullPolicy: {{ .Values.agent.image.pullPolicy }}
           args:
-            {{- range $arg := (include "extra.cmdArgs" (dict "cmdlineParams" .Values.agent.cmdlineParams) | fromYamlArray) }}
-            - {{ $arg | quote }}
-            {{- end }}
+            {{ include "extra.cmdArgs" (dict "cmdlineParams" .Values.agent.cmdlineParams) | nindent 12 }}
           env:
             {{- with .Values.agent.extraEnv }}
             {{- toYaml . | nindent 12 }}
             {{- end }}
             {{- if not (hasKey .Values.agent.cmdlineParams "reporter.grpc.host-port") }}
             - name: REPORTER_GRPC_HOST_PORT
-              value: "{{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}"
+              value: {{ include "jaeger.collector.name" . }}:{{ .Values.collector.service.grpc.port }}
             {{- end }}
           {{- with .Values.agent.envFrom }}
           envFrom:
